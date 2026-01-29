@@ -106,10 +106,31 @@ def select_polygon(video_path):
     cv2.destroyAllWindows()
     return points
 
-if __name__ == "__main__":
+""" if __name__ == "__main__":
     print("MAIN STARTED")
 
     video_path = "/"
     polygon = select_polygon(video_path)
 
-    print("Selected points:", polygon)
+    print("Selected points:", polygon) """
+    
+video_path = r"Video/Test.mp4"
+output_path = r"Video/Output.mp4"
+
+# Trespass Settings
+trespass_class_id = 0
+min_confidence = 0.5
+
+# Interactivity Select Polygon
+print("Stating polygon selection...")
+polygon_points = select_polygon(video_path)
+
+if not polygon_points:
+    print("No polygon defined. Exiting.")
+    exit()
+    
+print(f"Polygon defined with {len(polygon_points)} points:")
+print(polygon_points)
+
+#Create Shapely Polygon
+trespass_polygon = Polygon(polygon_points)
