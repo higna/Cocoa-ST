@@ -2,7 +2,7 @@
 import cv2
 import numpy as np
 from ultralytics import YOLO
-import matplotlib as plt
+import matplotlib.pyplot as plt
 from shapely.geometry import Point, Polygon
 
 
@@ -72,3 +72,44 @@ def select_polygon(video_path):
 
             if len(points) > 1:
                 cv2.polylines(display_frame, [np.array(points)], False, (0, 255, 0), 2)
+
+    # Mouse callback function
+    def mouse_callback(event, x, y, flags, param):
+        nonlocal points
+        if event == cv2.EVENT_LBUTTONDOWN:
+            points.append((x, y))
+            update_display()
+
+    cv2.setMouseCallback(window_name, mouse_callback)
+    # Initial display
+    update_display()
+
+    while True:
+        key = cv2.waitKey(1)
+
+        if key == 13 or key == 10:
+            if len(points) >= 3:
+                break
+            else:
+                print("Please select at least 3 points to form a polygon.")
+        elif key == ord("d"):  # Delete last point
+            if points:
+                points.pop()
+                update_display()
+        elif key == ord("c"):  # Clear all
+            points = []
+            update_display()
+        elif key == 27:  # ESC key(Quit)
+            points = []
+            break
+    cap.release()
+    cv2.destroyAllWindows()
+    return points
+
+if __name__ == "__main__":
+    print("MAIN STARTED")
+
+    video_path = "/"
+    polygon = select_polygon(video_path)
+
+    print("Selected points:", polygon)
